@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      - "POSTGRES_USER=vantage"
+      - "POSTGRES_PASSWORD=vantage"
+      - "POSTGRES_DB=vantage"
+      - "PGDATA=/data"
+    ports:
+      - 5433:5432
+    volumes:
+      - ./pgdata:/data
+
+  vantage6-server:
+    image: harbor2.vantage6.ai/infrastructure/server:cotopaxi
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./config:/mnt/    
+    command: uwsgi --http :5000 --gevent 1000 --http-websockets --master --callable app --disable-logging --wsgi-file /vantage6/vantage6-server/vantage6/server/wsgi.py --pyargv /mnt/config.yaml
+
+  gui:
+    image: harbor2.vantage6.ai/infrastructure/ui:cotopaxi
+    depends_on:
+      - vantage6-server
+    ports:
+      - "8080:80"
+    environment:
+      - API_URL=https://v6-server.tail984a0.ts.net/api
