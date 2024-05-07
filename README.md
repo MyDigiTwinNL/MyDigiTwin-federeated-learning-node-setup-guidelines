@@ -90,8 +90,16 @@ ExecStop=/opt/v6-nodes/agnode/venv/bin/v6 node stop --name agnode-config
 [Install]
 WantedBy=multi-user.target
 
+
+## Log files owner
+
+Set to v6:v6 to avoid conflict (docker root user may create it first)
+
 //running at boot
 WantedBy=multi-user.target
+
+
+
 
 
 
@@ -134,6 +142,24 @@ pip install vantage6
 
 v6 node new --user
 
+### Service status
+
+sudo systemctl status agnode.service
+
+journalctl -f -u agnode.service
+
+
+### Setup data on the server
+
+api_path: /api
+databases:
+- label: default
+  type: csv
+  uri: /opt/v6-nodes/agnode/data.csv
+
+encryption:
+  enabled: false
+  private_key: ''
 
 
 ```
