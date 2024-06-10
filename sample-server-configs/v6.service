@@ -1,0 +1,16 @@
+[Unit]
+Description=vantage6 mdt aggregator node service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=v6
+WorkingDirectory=/opt/v6-nodes/agnode
+Environment="PATH=/opt/v6-nodes/agnode/venv/bin"
+ExecStart=/opt/v6-nodes/agnode/venv/bin/v6 node start --name agnode-config
+ExecStop=/opt/v6-nodes/agnode/venv/bin/v6 node stop --name agnode-config
+
+[Install]
+WantedBy=multi-user.target
