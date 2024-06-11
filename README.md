@@ -1,5 +1,5 @@
 
-# Setup instructions for a setting up a vantage6 node as a Linux systemd service
+# Guidelines for setting up a vantage6 node as a Linux systemd service
 
 
 Requirements: 
