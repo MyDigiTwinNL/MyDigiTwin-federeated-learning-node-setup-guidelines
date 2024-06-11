@@ -86,7 +86,13 @@ The following steps assume that the service will be called **'node_alpha'**. You
 
 ### Install vantage6 on the service home folder.
 
-Create a folder for the node within the v6's user home folder (opt/v6-nodes)
+Create a folder for the node configurations (.config):
+
+```
+mkdir $HOME/.config
+```
+
+And one for each node environment/data within the v6's user home folder (opt/v6-nodes):
 
 ```
 mkdir $HOME/node_alpha
@@ -112,12 +118,6 @@ Create a new node using the `v6 node` command. Make sure it is created at a user
 
 ```
 v6 node new --user
-```
-
-```
-mkdir $HOME/.config
-mkdir $HOME/node_alpha
-mkdir $HOME/node_alpha/data
 ```
 
 Enter:
