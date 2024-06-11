@@ -1,30 +1,33 @@
 
-# Setup instructions for a dedicated host (v6 node as a service)
+# Setup instructions for a setting up a vantage6 node as a Linux systemd service
 
 
-Requirements: administrator user for the organization registered on the vantage6 server.
+Requirements: 
 
-# Install docker
+ - A linux user with sudo privileges
+ - Information provided by the vantage6 server admin:
+	 - 	Server URL
+	 -  API key
+	 -  User name and password of the vantage6 server's organization admin
+
+# 1. Installing docker
 
 Refer to [official documentation](https://docs.docker.com/engine/install/ubuntu/)
 
 
-# Creating application-level user
+# 2. Creating an user for the service
 
-### 1. Create the New User
+### Create a user for the service
 
-To create a new user named v6, use the useradd command followed by the -m option to create the home directory and the -s option to specify the shell. For example, if you want to use the Bash shell, you would use:
+Create a regular user (no sudo privileges)
 
 ```
 sudo useradd v6
 ```
 
-This command creates a new user named v6 with a home directory located at /home/v6 and sets the default shell to Bash.
+### Create a home directory for the service
 
-### 2. Set the home directory
-
-By default, the home directory for the new user is created under /home/v6. However, since you want the home directory to be located at /opt/v6, you'll need to move the existing home directory to the desired location and update the user's home directory path. Set Ownership of the Home Directory
-It's important to ensure that the new user owns the home directory. Set the permissions of the /opt/v6 directory so that only the owner (user 'v6') can read, write, and execute files within it. 
+Create a folder on /opt/ as the home directory of the service-related user, and ensure that only the 'v6' user can access it:
 
 
 ```
@@ -35,33 +38,33 @@ sudo chown -R v6:v6 /opt/v6-nodes
 sudo chmod 700 /opt/v6-nodes
 ```
 
-### 3. Set user password
+### Set user password
 
 Set a strong password for the v6 user:
+
 ```
 sudo passwd v6
 ```
 
-### 4. Verify user 
+### Verify that the user was properly configured
 
-This command should output information about the user v6, including the home directory, which should now be /opt/v6.
+This command should output information about the user v6, including the home directory, which should now be /opt/v6-nodes.
 
 ```
 id v6
 ```
 
-### 5. Add User to Docker Group
+### Add the new user to the Docker Group
 
-To add the user v6 to the Docker group, use the following command:
+This is needed as the service will lauch the docker daemon as the 'v6' user. To add the user v6 to the Docker group, use the following command:
 
 ```
 sudo usermod -aG docker v6
 ```
 
-(logout and login again as v6 before continuing)
-This command adds the user v6 to the Docker group, granting them access to Docker-related commands and resources.
+Logout and login again as v6 before continuing, so that the user's group rights are reloaded.
 
-### 6. Check that the v6 user can execute docker commands
+### Check that the v6 user can execute docker commands
 
 Hello-world from the v6 user
 
@@ -71,12 +74,17 @@ v6@node:~$ docker run hello-world
 
 # Creating a node for a collaboration
 
-Login as V6 user. Let's assume the node will be called: node_alpha
+### Login as the new v6 user
 
-A node that will be part of a collaboration.That is to say, multiple organizations being part of a federation. You will get an API key and a server URL.
+```
+su v6
+```
 
+### Create a folder for the service software and data
 
-## Install vantage6 on the V6's user home folder.
+The following steps assume that the service will be called **'node_alpha'**. You can change it to one that suits your setup. These steps also require an API key, the vantage6 server URL, and the credentials of a vantage6 user with organization management privileges.
+
+### Install vantage6 on the service home folder.
 
 Create a folder for the node within the v6's user home folder (opt/v6-nodes)
 
@@ -85,12 +93,11 @@ mkdir $HOME/node_alpha
 mkdir $HOME/node_alpha/data
 ```
 
-Get test dataset
+Get the test dataset included in this repository on the 'data' folder previously created:
 
 ```
 curl https://raw.githubusercontent.com/MyDigiTwinNL/MyDigiTwin-federeated-learning-node-setup-guidelines/main/dummy-data/testdata.csv?token=GHSAT0AAAAAACPNM3N7V5FWFW5SZVLDWTHQZTHBASA -o $HOME/node_alpha/data/testdata.csv
 ```
-
 
 Install vantage6 dependencies. This is tested with vantage6 4.4.1 node/server
 
@@ -112,7 +119,6 @@ mkdir $HOME/.config
 mkdir $HOME/node_alpha
 mkdir $HOME/node_alpha/data
 ```
-
 
 Enter:
 
@@ -148,7 +154,7 @@ databases:
 ...
 ```
 
-Set the node's encryption key. Use one of your server users with 'Organization Admin' privileges.
+Set the node's encryption key. When running the following command, you will be asked for the organization's manager user name and password:
 
 ```
 v6 node create-private-key -n node_alpha
@@ -195,23 +201,19 @@ Exit the attached node's log (Ctrl-C) and shut down the node:
 v6 node stop -n node_alpha 
 ```
 
-## Setup a systemd service for a node
+## Setting up a systemd service for the vantage6 node
 
+**Login again as an user with sudo privileges**
 
+### Creating a Service File
 
-### 1. Create a Service File
-
-As an user within the sudoer group:
-
-You need to create a systemd service file that defines how your service should behave. In ubuntu server, it is on the /etc/systemd/system/ folder. Let's name our service file node_alpha.service.
-
+Create a systemd service file that defines how the should behave. On an ubuntu server, it is on the /etc/systemd/system/ folder. In this case we will call the service file 'node_alpha.service'.
 
 ```
 sudo nano /etc/systemd/system/node_alpha.service
 ```
 
-2. Define the Service
-In the service file, you'll define the service's behavior. Here's an example based on your requirements. For name use `? Please enter a configuration-name: `
+For the file content, make sure that as a value for the `--name` flag of ExecStart and ExecStop you are using the configuration name you gave when you executed the `v6 node new` command (`? Please enter a configuration-name: `). Also make sure you use the right folder paths:
 
 ```
 [Unit]
@@ -223,54 +225,60 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 User=v6
-WorkingDirectory=/opt/v6-nodes/alpha-node
-Environment="PATH=/opt/v6-nodes/alpha-node/venv/bin"
-ExecStart=/opt/v6-nodes/node-alpha/venv/bin/v6 node start --name node_alpha
-ExecStop=/opt/v6-nodes/node-alpha/venv/bin/v6 node stop --name node_alpha
+WorkingDirectory=/opt/v6-nodes/node_alpha
+Environment="PATH=/opt/v6-nodes/node_alpha/venv/bin"
+ExecStart=/opt/v6-nodes/node_alpha/venv/bin/v6 node start --name node_alpha
+ExecStop=/opt/v6-nodes/node_alpha/venv/bin/v6 node stop --name node_alpha
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-## Reload Systemd
+## Reloading Systemd
 After creating the service file, you need to reload systemd to make it aware of your new service.
 
 ```
 sudo systemctl daemon-reload
 ```
 
-## Start the Service
+## Starting the Service
 Now, you can start your service using the following command:
 
 ```
 sudo systemctl start node_alpha.service
 ```
 
-5. Enable the Service
-To ensure the service with start automatically at boot, enable it:
+## Checking the status of the service
+
+To view the status of the service, you can use journalctl:
+
+```
+sudo journalctl -u node_alpha.service
+```
+
+## Lazydocker
+
+As the vantage6 node runs within a Docker container, it is important to also check the logs within it. One option is to install and run [lazydocker](https://github.com/jesseduffield/lazydocker), to see which containers are running once the service has started:
+
+![alt text](img/lazydocker.png)
+
+Alternatively, you can login to as the v6 user, and use the 'attach' command to check the logs:
+
+```
+/opt/v6-nodes/node_alpha/venv/bin/v6 node attach --name node_alpha
+```
+
+
+## Enable the Service
+
+Once you have configured the systemd service, make sure it will start automatically at boot:
 
 ```
 sudo systemctl enable node_alpha.service
 ```
 
-Check its status
 
-```
-sudo systemctl status agnode.service
-```
+# Updating vantage6 node version
 
-To view the logs, you can use journalctl:
-
-```
-sudo journalctl -u my-service
-```
-
-or attach to the v6 node's logs:
-
-```
-v6 node attach
-```
-
-
-# Update node version
+TODO
 
