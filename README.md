@@ -256,7 +256,7 @@ To view the status of the service, you can use journalctl:
 sudo journalctl -u node_alpha.service
 ```
 
-## Lazydocker
+## Checking the node status
 
 As the vantage6 node runs within a Docker container, it is important to also check the logs within it. One option is to install and run [lazydocker](https://github.com/jesseduffield/lazydocker), to see which containers are running once the service has started:
 
