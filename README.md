@@ -72,7 +72,7 @@ Hello-world from the v6 user
 v6@node:~$ docker run hello-world
 ```
 
-# Creating a node for a collaboration
+# 3. Creating a node for a collaboration
 
 ### Login as the new v6 user
 
@@ -234,21 +234,21 @@ ExecStop=/opt/v6-nodes/node_alpha/venv/bin/v6 node stop --name node_alpha
 WantedBy=multi-user.target
 ```
 
-## Reloading Systemd
+### Reloading Systemd
 After creating the service file, you need to reload systemd to make it aware of your new service.
 
 ```
 sudo systemctl daemon-reload
 ```
 
-## Starting the Service
+### Starting the Service
 Now, you can start your service using the following command:
 
 ```
 sudo systemctl start node_alpha.service
 ```
 
-## Checking the status of the service
+### Checking the status of the service
 
 To view the status of the service, you can use journalctl:
 
@@ -256,7 +256,7 @@ To view the status of the service, you can use journalctl:
 sudo journalctl -u node_alpha.service
 ```
 
-## Checking the node status
+### Checking the node status
 
 As the vantage6 node runs within a Docker container, it is important to also check the logs within it. One option is to install and run [lazydocker](https://github.com/jesseduffield/lazydocker), to see which containers are running once the service has started:
 
@@ -269,7 +269,7 @@ Alternatively, you can login to as the v6 user, and use the 'attach' command to 
 ```
 
 
-## Enable the Service
+### Enabling the Service
 
 Once you have configured the systemd service, make sure it will start automatically at boot:
 
