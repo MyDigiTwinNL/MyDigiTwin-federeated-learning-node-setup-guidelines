@@ -111,7 +111,7 @@ Install vantage6 dependencies. This setup has been tested with vantage6 4.5.3 no
 cd $HOME/node_alpha
 python -m venv venv
 source venv/bin/activate
-pip install vantage6=4.5.3
+pip install vantage6==4.5.3
 ```
 
 Create a new node using the `v6 node` command. Make sure it is created at a user level:
