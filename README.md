@@ -277,7 +277,7 @@ Once you have configured the systemd service, make sure it will start automatica
 sudo systemctl enable node_alpha.service
 ```
 
-# Updating node settings
+# Administrative tasks - Updating node settings
 
 To make changes on your node(s) do the following:
 
@@ -337,7 +337,7 @@ Update the settings as decribed by v6's [node administration documentation](http
   ```
 
 
-# Updating vantage6 node version
+# Administrative tasks - Updating vantage6 node version
 
 When the collaboration's central server is updated to a new vantage6 version, e.g., due to the need for a recently introduced feature, in some cases the nodes need to be updated as well. The following are the steps to update the node's underlying v6 version to verion X.Y.Z.
 
