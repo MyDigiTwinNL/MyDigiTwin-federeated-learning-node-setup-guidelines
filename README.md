@@ -277,8 +277,112 @@ Once you have configured the systemd service, make sure it will start automatica
 sudo systemctl enable node_alpha.service
 ```
 
+# Updating node settings
+
+To make changes on your node(s) do the following:
+
+### 1. Stop the vantage6 node service
+
+With a user with 'sudoer' privileges (replace `node_alpha` with the service name created through the previous steps):
+
+```
+sudo systemctl stop node_alpha.service
+```
+
+### 2. Edit the node configuration 
+
+Log in as the v6 user
+
+#### 2.1 (Optional) Locate the node configuration file
+
+If you are not sure about the location of your node configuration file, you can use the `v6 node files` command:
+
+```
+cd $HOME/node_alpha
+source venv/bin/activate
+v6 node files
+```
+
+#### 2.2 Edit the corresponding file. 
+
+Update the settings as decribed by v6's [node administration documentation](https://docs.vantage6.ai/en/version-4.0.0/node/configure.html#all-configuration-options). Some important settings include:
+
+
+- The datasources the node is getting access to:
+
+  ```yaml
+  # path or endpoint to the local data source. The client can request a
+  # certain database by using its label. The type is used by the
+  # auto_wrapper method used by algorithms. This way the algorithm wrapper
+  # knows how to read the data from the source. The auto_wrapper currently
+  # supports: 'csv', 'parquet', 'sql', 'sparql', 'excel', 'omop'. If your
+  # algorithm does not use the wrapper and you have a different type of
+  # data source you can specify 'other'.
+  databases:
+    - label: lifelines
+      uri: /data/location/lifelines_fhirdb.db.sqlite
+      type: sql
+  ```
+
+- The policies on which algorithms are allowed to run -and hence to get access to data- on this node:
+  ```yaml
+  # Define who is allowed to run which algorithms on this node.
+  policies:
+    # Control which algorithm images are allowed to run on this node. This is
+    # expected to be a valid regular expression.
+    allowed_algorithms:
+      - ^harbor2.vantage6.ai/[a-zA-Z]+/[a-zA-Z]+
+      - myalgorithm.ai/some-algorithm
+
+  ```
+
 
 # Updating vantage6 node version
 
-TODO
+When the collaboration's central server is updated to a new vantage6 version, e.g., due to the need for a recently introduced feature, in some cases the nodes need to be updated as well. The following are the steps to update the node's underlying v6 version to verion X.Y.Z.
+
+### 1. Stop the vantage6 node service
+
+With a user with 'sudoer' privileges (replace `node_alpha` with the service name created through the previous steps):
+
+```
+sudo systemctl stop node_alpha.service
+```
+
+### 2. Update the vantage6 packages used by the systemd service
+
+Login with the v6 user, go to the node's folder (e.g., `$HOME/node_alpha`), and update the vantage6 packages (replace X.Y.Z with the version you want to update to):
+
+```
+cd $HOME/node_alpha
+source venv/bin/activate
+pip install --upgrade vantage6==X.Y.Z
+```
+
+### 3. Update the API key and regenerate the encryption key (if needed)
+
+In some cases the v6-server's admin need to regenerate the node-API keys after updating the server. If a new API key is given to you, edit the node's configuration file and update the `api_key` field accordingly. 
+
+If you are not sure about the location of your node's configuration file, use the following command (as the v6 user):
+
+```
+v6 node files
+```
+
+In case the encryption key is also needed to be regenerated, use the same command from previous steps:
+
+```
+v6 node create-private-key -n node_alpha
+```
+
+### 4 Restart the service
+
+With the user with 'sudoer' privileges:
+
+```
+sudo systemctl stop node_alpha.service
+```
+
+
+
 
