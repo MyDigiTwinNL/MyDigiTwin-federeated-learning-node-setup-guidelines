@@ -359,7 +359,7 @@ source venv/bin/activate
 pip install --upgrade vantage6==X.Y.Z
 ```
 
-### 3. Update the API key and regenerate the encryption key (if needed)
+### 3. **(Only if needed)** Update the API key and regenerate the encryption key
 
 In some cases the v6-server's admin need to regenerate the node-API keys after updating the server. If a new API key is given to you, edit the node's configuration file and update the `api_key` field accordingly. 
 
@@ -372,7 +372,8 @@ v6 node files
 In case the encryption key is also needed to be regenerated, use the same command from previous steps:
 
 ```
-v6 node create-private-key -n node_alpha
+v6 node create-private-key -n node_alpha --overwrite
+
 ```
 
 ### 4 Restart the service
