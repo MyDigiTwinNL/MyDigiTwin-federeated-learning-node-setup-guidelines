@@ -277,7 +277,7 @@ Once you have configured the systemd service, make sure it will start automatica
 sudo systemctl enable node_alpha.service
 ```
 
-# Administrative tasks - Updating node settings
+# Administrative tasks - [Updating node settings](#update_settings)
 
 To make changes on your node(s) do the following:
 
@@ -308,7 +308,7 @@ v6 node files
 Update the settings as decribed by v6's [node administration documentation](https://docs.vantage6.ai/en/version-4.0.0/node/configure.html#all-configuration-options). Some important settings include:
 
 
-- The datasources the node is getting access to:
+- The datasources the node is getting access to, for example:
 
   ```yaml
   # path or endpoint to the local data source. The client can request a
@@ -324,7 +324,7 @@ Update the settings as decribed by v6's [node administration documentation](http
       type: sql
   ```
 
-- The policies on which algorithms are allowed to run -and hence to get access to data- on this node:
+- The policies on which algorithms are allowed to run -and hence to get access to data- on this node, for example:
   ```yaml
   # Define who is allowed to run which algorithms on this node.
   policies:
@@ -336,8 +336,18 @@ Update the settings as decribed by v6's [node administration documentation](http
 
   ```
 
+### 2.3. Restart the vantage6 node service
 
-# Administrative tasks - Updating vantage6 node version
+With a user with 'sudoer' privileges (replace `node_alpha` with the service name created through the previous steps):
+
+```
+sudo systemctl start node_alpha.service
+```
+
+
+
+
+# Administrative tasks - [Updating vantage6 node version](#updating_v6_version)
 
 When the collaboration's central server is updated to a new vantage6 version, e.g., due to the need for a recently introduced feature, in some cases the nodes need to be updated as well. The following are the steps to update the node's underlying v6 version to verion X.Y.Z.
 
@@ -381,7 +391,7 @@ v6 node create-private-key -n node_alpha --overwrite
 With the user with 'sudoer' privileges:
 
 ```
-sudo systemctl stop node_alpha.service
+sudo systemctl start node_alpha.service
 ```
 
 
