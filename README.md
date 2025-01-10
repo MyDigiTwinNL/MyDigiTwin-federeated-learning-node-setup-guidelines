@@ -361,6 +361,12 @@ With a user with 'sudoer' privileges (replace `node_alpha` with the service name
 sudo systemctl stop node_alpha.service
 ```
 
+Note: if you are not sure about the service name, you can list the existing ones:
+
+```
+sudo systemctl list-unit-files --type=service
+```
+
 ### 2. Update the vantage6 packages used by the systemd service
 
 Login with the v6 user, go to the node's folder (e.g., `$HOME/node_alpha`), and update the vantage6 packages (replace X.Y.Z with the version you want to update to):
