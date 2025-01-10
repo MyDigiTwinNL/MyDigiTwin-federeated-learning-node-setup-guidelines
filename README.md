@@ -295,7 +295,9 @@ Log in as the v6 user
 
 #### 2.1 (Optional) Locate the node configuration file
 
-If you are not sure about the location of your node configuration file, you can use the `v6 node files` command:
+If the node was set up as described in the previous steps, the configuration file should be located at `/opt/v6-nodes/.config/vantage6/node/`. For example, if the configuration name given in Step 3 was used (node-alpha), the file to be edited would be `/opt/v6-nodes/.config/vantage6/node/node-alpha-config.yaml`.
+
+You can also use the `v6 node files` command to get the absolute path of the configuration file:
 
 ```
 cd $HOME/node_alpha
