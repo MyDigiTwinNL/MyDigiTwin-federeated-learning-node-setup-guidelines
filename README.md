@@ -326,17 +326,46 @@ Update the settings as decribed by v6's [node administration documentation](http
       type: sql
   ```
 
-- The policies on which algorithms are allowed to run -and hence to get access to data- on this node, for example:
+- The policies on which algorithms are allowed to run -and hence to get access to data- on this node. The following configuration will restrict the node to only execute the [FedAvg](https://github.com/MyDigiTwinNL/FedAvg_vantage6) algorithm, with a SHA-256 hash as a tag:
+
   ```yaml
   # Define who is allowed to run which algorithms on this node.
   policies:
     # Control which algorithm images are allowed to run on this node. This is
     # expected to be a valid regular expression.
     allowed_algorithms:
-      - ^harbor2.vantage6.ai/[a-zA-Z]+/[a-zA-Z]+
-      - myalgorithm.ai/some-algorithm
+      - ^ghcr\.io\/mydigitwinnl\/federated_cvdm_training_poc:[0-9a-f]{64}$
 
   ```
+  Restrict the node to only execute the [FedAvg](https://github.com/MyDigiTwinNL/FedAvg_vantage6) algorithm image, with a **specific** SHA-256 hash as a tag:
+
+  ```yaml
+  # Define who is allowed to run which algorithms on this node.
+  policies:
+    # Control which algorithm images are allowed to run on this node. This is
+    # expected to be a valid regular expression.
+    allowed_algorithms:
+      - ^ghcr\.io\/mydigitwinnl\/federated_cvdm_training_poc:82b6390525e5690a56c1ddde3dd2a2eb2d98b1c8$
+
+  ```
+
+  Restrict the node to only execute the [FedAvg](https://github.com/MyDigiTwinNL/FedAvg_vantage6) algorithm image, with any tag:
+
+  ```yaml
+  # Define who is allowed to run which algorithms on this node.
+  policies:
+    # Control which algorithm images are allowed to run on this node. This is
+    # expected to be a valid regular expression.
+    allowed_algorithms:
+      - ^ghcr\.io\/mydigitwinnl\/federated_cvdm_training_poc:[a-zA-Z0-9_.-]{1,128}$
+  ```
+
+
+
+
+
+
+  For example, 
 
 ### 2.3. Restart the vantage6 node service
 
