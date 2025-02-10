@@ -9,11 +9,11 @@ The vantage6 algorithms are distributed as Docker packages. These containers enc
 
 Like [FedAvg](https://github.com/MyDigiTwinNL/FedAvg_vantage6), the source code of any algoritjm developed for the MyDigiTwin project will be hosted on the the https://github.com/MyDigiTwinNL organization. Likewise, the Docker package of these projects will be automatically built using the CI/CD features provided by GitHub actions, and hosted on the [organization's registry (ghcr.io/mydigitwinnl)](https://github.com/orgs/MyDigiTwinNL/packages). This way, the algorithm reviewers can easily refer to the precise version (or commit) of the source of the Docker package they are requested to whitelist. By convention, it is expected that the Docker images will be built using either the hash code of the Git commit, or the release version as a Tag. For example, in the image below, the image built for the [FedAvg](https://github.com/MyDigiTwinNL/FedAvg_vantage6) algorithm has, as a Tag, a hashcode that starts with 88027f24:
 
-![alt text](image-1.png)
+![alt text](img/package_list-1.png)
 
 Which can be traced to one of the algorithms' source code commits:
 
-![alt text](image.png)
+![alt text](img/commits.png)
 
 ## Image structure
 
