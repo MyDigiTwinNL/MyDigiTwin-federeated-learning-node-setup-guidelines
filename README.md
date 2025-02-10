@@ -360,12 +360,9 @@ Update the settings as decribed by v6's [node administration documentation](http
       - ^ghcr\.io\/mydigitwinnl\/federated_cvdm_training_poc:[a-zA-Z0-9_.-]{1,128}$
   ```
 
+  ## Node admins:
+  Please refer to the [reviewewing algorithms section](reviewing_v6_algorithms.md) for more information on what to consider when reviewing an algorithm before 'whitelisting' it.
 
-
-
-
-
-  For example, 
 
 ### 2.3. Restart the vantage6 node service
 
